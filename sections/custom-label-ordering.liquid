@@ -1,0 +1,81 @@
+<section class="section section--page page">
+  <div class="container container--tiny">
+    <center><div class="section__title section__title--center">
+      <h1 class="section__title-text h2">{{ section.settings.title }}</h1>
+    </div>
+      </br>
+    {% if page.content.size > 0 %}
+    <div class="page__content rte">
+      {{ page.content }}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="page__contact-form wsForm">
+    <div class="container container--tiny container--mob-0">
+      {% form 'contact' %}
+
+        {% if form.posted_successfully? %}
+        <p class="note note--success">
+            {{ 'contact.form.post_success' | t }}
+          </p>
+        {% endif %}
+
+      {{ form.errors | default_errors }}
+
+      <div class="o-layout">
+
+        <div class="o-layout">
+          <div style="display: none;">
+          <label for="nothing">Form for Label ordering</label>
+          <input type="text" name="contact[FormType]" value="Label Ordering">
+        </div>
+        
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+          <input required type="text" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+         
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormEmail" class="{% if form.errors contains 'email' %}label--error{% endif %}">{{ 'contact.form.email' | t }}</label>
+          <input required type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off"  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="{% if form.errors contains 'email' %}input--error{% endif %}">
+        </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormCompanyName">Company Name</label>
+      <input required type="text" id="ContactFormCompanyName" name="contact[CompanyName]">	 
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+        <label for="ContactFormDesiredLabels">Quantity of Custom Labels</label>
+        <input required type="text" id="ContactFormDesiredLabels" name="contact[NumberOfLabels]">	 
+      </div>
+      
+          </div>
+
+      <input type="submit" class="btn btn--primary btn--center" value="Submit">
+      {% endform %}
+    </div>
+  </div>
+      </br>	
+</section>
+
+{% schema %}
+  {
+    "name": "Custom Label Order Form",
+    "settings": [
+          {
+      "type": "textarea",
+      "id": "title",
+      "label": "Form Title",
+      "default": "Custom Label"
+    }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

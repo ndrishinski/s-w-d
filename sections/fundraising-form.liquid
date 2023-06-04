@@ -1,0 +1,112 @@
+<section class="section section--page page">
+  <div class="container container--tiny">
+    <center><div class="section__title section__title--center">
+      <h1 class="section__title-text h2">{{ section.settings.title }}</h1>
+    </div>
+      </br>
+    {% if page.content.size > 0 %}
+    <div class="page__content rte">
+      {{ page.content }}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="page__contact-form wsForm">
+    <div class="container container--tiny container--mob-0">
+      {% form 'contact' %}
+
+        {% if form.posted_successfully? %}
+        <p class="note note--success">
+            {{ 'contact.form.post_success' | t }}
+          </p>
+        {% endif %}
+
+      {{ form.errors | default_errors }}
+
+      <div class="o-layout">
+        <div class="o-layout">
+          <div style="display: none;">
+          <label for="nothing">Form for fundraising</label>
+          <input type="text" name="contact[FormType]" value="Fundraising">
+        </div>
+        
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+          <input required type="text" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+         
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormEmail" class="{% if form.errors contains 'email' %}label--error{% endif %}">{{ 'contact.form.email' | t }}</label>
+          <input required type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off"  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="{% if form.errors contains 'email' %}input--error{% endif %}">
+        </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormCompanyName">Company Name</label>
+      <input required type="text" id="ContactFormCompanyName" name="contact[CompanyName]">	 
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormAddress">Address</label>
+      <input required type="text" id="ContactFormAddress" name="contact[Address]">
+      </div>
+      
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+        <label for="ContactFormCity">City</label>
+      <input required type="text" id="ContactFormCity" name="contact[City]">      
+      </div>
+      
+    
+        <div class="o-layout__item u-1/1 u-1/2@tab">      
+      	  <label for="ContactFormState">State</label>
+	      <input required type="text" id="ContactFormState" name="contact[State]">
+        </div>
+       
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormPostalCode">Postal Code</label>
+          <input required type="text" id="ContactFormPostalCode" name="contact[PostalCode]">
+        </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormCountry">Country</label>
+      <input required type="text" id="ContactFormCountry" name="contact[Country]">            
+      </div>
+      
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+	  <label>Which Fundraising Program are you interested in?</label>
+      <input type="radio" id="contactFormProgram1" name="contact[9oz quote candles]" value="9oz quote candles" /> 9oz quote candles<br>
+      <input type="radio" id="contactFormProgram2" name="contact[9oz spring candles]" value="9oz spring candles" /> 9oz spring candles<br>
+        </div>
+      
+     <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormFundraiseStart">Provide Start and End Dates for Your Fundraiser</label>
+      <input required type="text" id="ContactFormFundraiseStart" name="contact[FundraiserDates]">            
+      </div>  
+
+          </div>
+
+      <input type="submit" class="btn btn--primary btn--center" value="Submit Application">
+      {% endform %}
+    </div>
+  </div>
+      </br>	
+</section>
+
+{% schema %}
+  {
+    "name": "Fundraiser Contact Form",
+    "settings": [
+          {
+      "type": "textarea",
+      "id": "title",
+      "label": "Form Title",
+      "default": "Fundraise with us"
+    }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

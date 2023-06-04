@@ -1,0 +1,155 @@
+{%- style -%}
+
+#instaWrap.spaceAbove {
+padding-top: {{ section.settings.topSpacing }}px;
+}
+#instaWrap.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing }}px;
+}
+
+@media only screen and (max-width:768px){
+     
+#instaWrap.spaceAbove {
+padding-top: {{ section.settings.topSpacing | times:'0.5' }}px;
+}
+#instaWrap.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing | times:'0.5' }}px;
+}
+
+}
+
+{%- endstyle -%}
+
+{{section.settings.html_area}}
+
+{% unless section.settings.html_area contains "feed-" %}
+
+  <div id="instaWrap" data-aos
+    style="background-color: {{ section.settings.bgColor }}; border-top: none;" 
+ class="{% if section.settings.space_above %} spaceAbove{% endif %}{% if section.settings.space_below %} spaceBelow{% endif %} {% if section.settings.addOuterMargins %}addOuterMargins{% endif %}" >
+
+<div id="instaText" data-aos>
+  
+  <div id="instaTitle">
+    <div class="h2">{{ section.settings.socialTitle }}</div>
+    <p>{{ section.settings.socialText }}</p>
+  </div>
+
+    <div id="instaBtn1" class="small--hide medium-up--show">
+{%- if section.settings.button_label != blank -%}
+          <div class="appear-delay{% cycle '','-1','-2','-3','-4' %}">
+            <a href="{{ section.settings.button_link }}" class="btn{% if section.settings.button_style == 'secondary' %} btn--tertiary{% endif %}">
+              {{ section.settings.button_label }}
+            </a>
+          </div>
+        {%- endif -%}
+  </div>
+  
+</div>
+    
+  <div id="insta-feed"></div>
+
+       <div id="instaBtn2" class="medium-up--hide medium-down--show">
+{%- if section.settings.button_label != blank -%}
+          <div class="appear-delay{% cycle '','-1','-2','-3','-4' %}">
+            <a href="{{ section.settings.button_link }}" class="btn{% if section.settings.button_style == 'secondary' %} btn--tertiary{% endif %}">
+              {{ section.settings.button_label }}
+            </a>
+          </div>
+        {%- endif -%}
+  </div>
+
+  </div>
+  {% endunless  %}
+  
+  {%schema%}
+    {"name":"Instafeed App",
+      "settings":[
+        {
+          "type":"textarea",
+          "id":"html_area",
+          "label":"Custom Code (optional)"
+        },
+ {
+      "type": "checkbox",
+      "id": "addOuterMargins",
+      "label": "Add Outer Margins"
+    },
+         {
+      "type": "text",
+      "id": "socialTitle",
+      "label": "Social Title"
+    },
+         {
+      "type": "textarea",
+      "id": "socialText",
+      "label": "Social Text"
+    },
+        {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button Style",
+      "default": "primary",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        }
+      ]
+    },
+           {
+      "type": "color",
+      "id": "bgColor",
+      "label": "Background Color"
+    },
+    {
+      "type": "range",
+      "id": "topSpacing",
+      "label": "Top Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_above",
+      "label": "Apply Top Spacing"
+    },
+     {
+      "type": "range",
+      "id": "bottomSpacing",
+      "label": "Bottom Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_below",
+      "label": "Apply Bottom Spacing"
+    }
+      ],
+      "presets":[{"name":"Instafeed App",
+        "category":"Instagram Feed"
+      }
+      ]
+    }
+    {%endschema%}

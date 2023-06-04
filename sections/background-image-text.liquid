@@ -1,0 +1,290 @@
+{%- style -%}
+
+#bgImg-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing }}px;
+}
+#bgImg-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing }}px;
+}
+
+@media screen and (max-width: 768px) {
+  
+.background-media-text--{{ section.id }} {
+background-image: url({{ section.settings.image | img_url: '1x1' }});
+}
+#bgImg-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing | times:'0.5' }}px;
+}
+#bgImg-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing | times:'0.5' }}px;
+}
+  
+}
+        
+{%- endstyle -%}
+
+<div id="bgImg-{{ section.id }}"
+  style="background-color: {{ section.settings.bgColor }}" 
+  class="{% if section.settings.space_above %} spaceAbove{% endif %}{% if section.settings.space_below %} spaceBelow{% endif %} addOuterMargins2"
+  >
+
+<div
+  data-section-id="{{ section.id }}"
+  data-section-type="background-image"
+
+  class="background-media-text background-media-text--{{ section.id }} background-media-text--{{ section.settings.height }} loaded"
+  data-aos="background-media-text__animation">
+
+  <div class="background-media-text__container">
+
+
+      {%- if section.settings.image != blank -%}
+          {% style %}
+            .background-media-text__image--{{ section.id }}{
+              object-position: {{ section.settings.focal_point }};
+            }
+          {% endstyle %}
+
+          {% if section.settings.imageMobile != blank %}
+          {% assign classes = 'medium-up--show small--hide image-fit background-media-text__image background-media-text__image--' | append: section.id %}
+        {% else %}
+        {% assign classes = 'image-fit background-media-text__image background-media-text__image--' | append: section.id %}
+        {% endif %}
+
+          {% render 'image-element'
+            img: section.settings.image,
+            img_width: 2400,
+            classes: classes,
+            alt: section.settings.image.alt,
+            sizes: '100%'
+          %}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+                {%- if section.settings.imageMobile != blank -%}
+          {% style %}
+            .background-media-text__imageMobile--{{ section.id }}{
+              object-position: {{ section.settings.focal_point }};
+            }
+          {% endstyle %}
+
+          {% assign classes = 'small--show medium-up--hide image-fit background-media-text__image background-media-text__imageMobile--' | append: section.id %}
+
+          {% render 'image-element'
+            img: section.settings.imageMobile,
+            img_width: 2400,
+            classes: classes,
+            alt: section.settings.imageMobile.alt,
+            sizes: '100%'
+          %}
+      {%- endif -%}
+
+
+  </div>
+
+  
+  {%- if section.settings.subtitle != blank or section.settings.title != blank or section.settings.text != blank -%}
+    <div class="background-media-text__inner">
+      <div class="background-media-text__aligner background-media-text--{{ section.settings.layout }}">
+        <div class="animation-cropper">
+          <div class="animation-contents">
+            <div class="background-media-text__text{% if section.settings.framed %} background-media-text__text--framed{% endif %}">
+              {%- if section.settings.subtitle -%}
+                <p class="subheading">{{ section.settings.subtitle }}</p>
+              {%- endif -%}
+              {%- if section.settings.title != blank -%}
+                <p class="h1">{{ section.settings.title | newline_to_br }}</p>
+              {%- endif -%}
+              {%- if section.settings.text != blank -%}
+                <div class="rte background-media-text__subtext">{{ section.settings.text }}</div>
+              {%- endif -%}
+              {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+                <a href="{{ section.settings.button_link }}" class="btn{% if section.settings.color_accent contains '#26241e' %} btn--inverse{% endif %}">
+                  {{ section.settings.button_label }}
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+<div class="background-media-text__spacer background-media-text--{{ section.settings.height }}"></div>
+
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.background-image-text.name",
+  "class": "index-section--flush",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "t:sections.background-image-text.settings.subtitle.label",
+      "default": "Impressive"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "t:sections.background-image-text.settings.title.label",
+      "default": "Large image with text box"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.background-image-text.settings.text.label",
+      "default": "<p>Pair large text with a full-width image to draw attention to an important detail of your brand or product line.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.background-image-text.settings.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.background-image-text.settings.button_link.label"
+    },
+     {
+          "type": "color",
+          "id": "color_accent",
+          "label": "Button Color",
+          "default": "#26241E"
+        },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.background-image-text.settings.image.label"
+    },
+     {
+      "type": "image_picker",
+      "id": "imageMobile",
+      "label": "Mobile Image"
+    },
+    {
+      "type": "select",
+      "id": "focal_point",
+      "label": "t:sections.background-image-text.settings.focal_point.label",
+      "info": "t:sections.background-image-text.settings.focal_point.info",
+      "default": "center",
+      "options": [
+        {
+          "value": "20% 0",
+          "label": "t:sections.background-image-text.settings.focal_point.options.20_0.label"
+        },
+        {
+          "value": "top",
+          "label": "t:sections.background-image-text.settings.focal_point.options.top.label"
+        },
+        {
+          "value": "80% 0",
+          "label": "t:sections.background-image-text.settings.focal_point.options.80_0.label"
+        },
+        {
+          "value": "20% 50%",
+          "label": "t:sections.background-image-text.settings.focal_point.options.20_50.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.background-image-text.settings.focal_point.options.center.label"
+        },
+        {
+          "value": "80% 50%",
+          "label": "t:sections.background-image-text.settings.focal_point.options.80_50.label"
+        },
+        {
+          "value": "20% 100%",
+          "label": "t:sections.background-image-text.settings.focal_point.options.20_100.label"
+        },
+        {
+          "value": "bottom",
+          "label": "t:sections.background-image-text.settings.focal_point.options.bottom.label"
+        },
+        {
+          "value": "80% 100%",
+          "label": "t:sections.background-image-text.settings.focal_point.options.80_100.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.background-image-text.settings.layout.label",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.background-image-text.settings.layout.options.left.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.background-image-text.settings.layout.options.right.label"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "t:sections.background-image-text.settings.height.label",
+      "default": 550,
+      "min": 450,
+      "max": 750,
+      "step": 100,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "framed",
+      "label": "t:sections.background-image-text.settings.framed.label",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgColor",
+      "label": "Background Color",
+      "default": "#EAE6DD"
+    },
+    {
+      "type": "range",
+      "id": "topSpacing",
+      "label": "Top Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_above",
+      "label": "Apply Top Spacing",
+      "default": true
+    },
+     {
+      "type": "range",
+      "id": "bottomSpacing",
+      "label": "Bottom Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_below",
+      "label": "Apply Bottom Spacing",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.background-image-text.presets.large_image_with_text_box.name"
+    }
+  ]
+}
+{% endschema %}

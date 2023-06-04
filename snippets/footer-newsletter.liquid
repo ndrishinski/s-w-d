@@ -1,0 +1,55 @@
+<div class="footer__item-padding">
+  {%- if block.settings.show_footer_title -%}
+    <p class="h3 footer__title">{{ block.settings.title }}</p>
+
+  {%- endif -%}
+  <div
+    {% if block.settings.show_footer_title %}
+      id="Footer-{{ block.id }}" class=""
+    {% endif %}>
+    <div class="collapsible-content__inner">
+      <div class="">
+        {%- if block.settings.text -%}
+          {{ block.settings.text }}
+        {%- endif -%}
+
+        <div class="klaviyo_messages"> 
+          <div class="success_message" style="display:none;"></div> 
+          <div class="error_message" style="display:none;"></div>
+        </div> 
+        <script type="text/javascript">
+          window.addEventListener("load", function() {
+            KlaviyoSubscribe.attachToForms('#Form-{{ section_id }}', {
+              hide_form_on_success: true,
+              success_message: "Thank you for signing up! Your special offer is on its way!",
+              success: function ($form) {
+                $('.text-close.js-modal-close').text('Close')
+                var email = $form.find('[name="email"]').val();
+                _learnq.push(['identify', { $email: email }]);
+                _learnq.push(['track', 'Signed Up for Newsletter']);
+              }
+            });
+          });
+        </script>        
+        <form id="Form-{{ section_id }}" class="newsletter_form signup klaviyo_gdpr_embed_NzW6YX" action="//manage.kmail-lists.com/subscriptions/subscribe" data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" method="GET" target="_blank" novalidate="novalidate">
+          <div class="klaviyo_field_group klaviyo_form_actions">
+            <input type="hidden" name="g" value="NzW6YX">
+            <input type="hidden" name="$fields" value="">            
+            <label for="Email-{{ block.id }}" class="hidden-label">{{ 'general.newsletter_form.newsletter_email' | t }}</label>
+            <div class="footer__newsletter">
+              <input type="email" value="" name="email" id="k_id_email_{{ section_id }}" placeholder="email@example.com" class="footer__newsletter-input" autocorrect="off" autocapitalize="off">
+              <button type="submit" class="footer__newsletter-btn" name="commit" aria-label="{{ 'general.newsletter_form.submit' | t }}">
+                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-email" viewBox="0 0 64 64"><path d="M63 52H1V12h62zM1 12l25.68 24h9.72L63 12M21.82 31.68L1.56 51.16m60.78.78L41.27 31.68"/></svg>
+                <span class="footer__newsletter-btn-label">
+                  {{ 'general.newsletter_form.submit' | t }}
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+        {% render 'social-icons', additional_classes: 'footer__social' %}
+
+      </div>
+    </div>
+  </div>
+</div>

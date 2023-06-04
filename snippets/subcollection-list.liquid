@@ -1,0 +1,47 @@
+{%- for sub_link in link.links -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop Start {%- endcomment -%}
+{%- capture hide_resource -%}{% render "wc_product_visibility", resource: sub_link %}{%- endcapture -%}
+{%- if hide_resource == "true" -%}
+  {% continue %}
+{%- endif -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop End {%- endcomment -%}
+
+  {%- if sub_link.url contains '/collections/' -%}
+    {%- assign lang_code_string = request.locale.iso_code | prepend: '/' | downcase -%}
+    {%- assign sub_handle = sub_link.url | remove: '/collections/' | remove: lang_code_string -%}
+    <li {% if sub_link.current %}class="tag--active"{% endif %}>
+      <a href="{{ sub_link.url }}" class="no-ajax">
+        {{ sub_link.title }}
+        {%- if block.settings.enable_count and collections[sub_handle].products_count != blank -%}
+          &mdash; {{ collections[sub_handle].products_count }}
+        {%- endif -%}
+      </a>
+
+      {%- if block.settings.enable_subsubcollections and sub_link.levels > 0 -%}
+        <ul class="no-bullets tag-list">
+          {%- for sub_sub_link in sub_link.links -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop Start {%- endcomment -%}
+{%- capture hide_resource -%}{% render "wc_product_visibility", resource: sub_sub_link %}{%- endcapture -%}
+{%- if hide_resource == "true" -%}
+  {% continue %}
+{%- endif -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop End {%- endcomment -%}
+
+            {%- if sub_sub_link.url contains '/collections/' -%}
+              {%- assign lang_code_string = request.locale.iso_code | prepend: '/' | downcase -%}
+              {%- assign sub_sub_handle = sub_sub_link.url | remove: '/collections/' | remove: lang_code_string -%}
+              <li {% if sub_sub_link.current %}class="tag--active"{% endif %}>
+                <a href="{{ sub_sub_link.url }}" class="no-ajax">
+                  {{ sub_sub_link.title }}
+                  {%- if block.settings.enable_count and collections[sub_sub_handle].products_count != blank -%}
+                    &mdash; {{ collections[sub_sub_handle].products_count }}
+                  {%- endif -%}
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </li>
+  {%- endif -%}
+{%- endfor -%}

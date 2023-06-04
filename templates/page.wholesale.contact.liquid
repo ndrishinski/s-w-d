@@ -1,0 +1,105 @@
+</br>
+<section class="section section--page page">
+  <div class="container container--tiny">
+    <center><div class="section__title section__title--center">
+      <h1 class="section__title-text h2">{{ page.title }}</h1>
+    </div>
+      </br>
+    {% if page.content.size > 0 %}
+    <div class="page__content rte">
+      {{ page.content }}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="page__contact-form">
+    <div class="container container--tiny container--mob-0">
+      {% form 'contact' %}
+
+      {% if form.posted_successfully? %}
+      <h4 class="page__contact-form__note form-success">{{ 'contact.form.post_success' | t }}</h4>
+      {% endif %}
+
+      {{ form.errors | default_errors }}
+
+      <div class="o-layout">
+        <center><div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+          <input required type="text" id="ContactFormName" name="contact[name]" style="width: 300px;"value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+          </br>
+        <center><div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormEmail" class="{% if form.errors contains 'email' %}label--error{% endif %}">{{ 'contact.form.email' | t }}</label>
+          <input required type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off" style="width: 300px;" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="{% if form.errors contains 'email' %}input--error{% endif %}">
+        </div>
+      </div>
+	 </br>
+      <center><label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+      <input required type="tel" id="ContactFormPhone" name="contact[phone]" pattern="[0-9\-]*" style="width: 300px;" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+ 	   </br>
+       </br>
+      <center><label for="ContactFormCompanyName">Company Name</label>
+      <input required type="text" id="ContactFormCompanyName" name="contact[CompanyName]"style="width: 300px;">	 
+       </br>
+       </br>
+      <center><label for="ContactFormAddress">Address</label>
+      <input required type="text" id="ContactFormAddress" name="contact[Address]"style="width: 300px;">
+ 		</br>
+        </br>
+      <center><label for="ContactFormCity">City</label>
+      <input required type="text" id="ContactFormCity" name="contact[City]"style="width: 300px;">      
+  	    </br> 
+        </br>
+      <center><div class="o-layout">
+        <div class="o-layout__item u-1/1 u-1/2@tab">      
+      	  <label for="ContactFormState">State</label>
+	      <input required type="text" id="ContactFormState" name="contact[State]"style="width: 300px;">
+        </div>
+         </br>
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormPostalCode">Postal Code</label>
+          <input required type="text" id="ContactFormPostalCode" name="contact[PostalCode]"style="width: 300px;">
+        </div>
+      </div>
+          </br>
+      <label for="ContactFormCountry">Country</label>
+      <input required type="text" id="ContactFormCountry" name="contact[Country]"style="width: 300px;">            
+ 		</br>
+		</br>
+      <label for="ContactFormEIN">Federal Tax EIN</label>
+      <input required type="text" id="ContactFormEIN" name="contact[EIN]"style="width: 300px;">
+       </br>
+		</br>
+      <label for="ContactFormWebsite">Website URL</label>
+      <input required type="text" id="ContactFormWebsite" name="contact[Website]"style="width: 300px;">
+       </br>
+		</br>
+      <label for="ContactFormInstagramHandle">Instagram Handle</label>
+      <input required type="text" id="ContactFormInstagramHandle" name="contact[InstagramHandle]"style="width: 300px;">
+ 		</br>
+        </br>
+      <label for="ContactFormAboutYourShop">About Your Shop</label>
+      <textarea rows="10" id="ContactFormMessage" name="contact[body]"style="width: 300px;">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+		</br>
+      </br>
+	  <label>What is your shop type?</label>
+      <input type="radio" id="ContactFormBrickAndMortar" name="contact[Brick and Mortar]" value="BrickAndMortar" /> Brick and Mortar<br>
+      <input type="radio" id="contactFormOnline" name="contact[Online]" value="Online" /> Online<br>
+      <input type="radio" id="contactFormBoth" name="contact[Both]" value="Both" /> Both<br>
+ 	
+      </br>
+      <label>What is your industry?</label>
+      <input type="radio" id="ContactFormBoutique" name="contact[Boutique]" value="Boutique" /> Boutique<br>
+      <input type="radio" id="ContactFormSpa/Salon" name="contact[Spa/Salon]" value="Spa/Salon" /> Spa/Salon<br>
+      <input type="radio" id="contactFormFlorist/Garden Center" name="contact[Florist/Garden Center]" value="Florist/Garden Center" /> Florist/Garden Center<br>
+      <input type="radio" id="contactFormCoffee Shop" name="contact[Coffee Shop]" value="Coffee Shop" /> Coffee Shop<br>
+      <input type="radio" id="contactFormSubscriptionBox" name="contact[Subscription Box]" value="SubscriptionBox" /> Subscription Box<br>
+      <input type="radio" id="contactFormRentalProperty" name="contact[Rental Property]" value="RentalProperty" /> Rental Property<br>
+	  </br>
+
+      <input type="submit" class="c-btn c-btn--primary c-btn--center" value="{{ 'contact.form.send' | t }}">
+      {% endform %}
+    </div>
+  </div>
+      </br>	
+</section>

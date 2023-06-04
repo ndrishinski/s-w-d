@@ -1,0 +1,149 @@
+{%- liquid
+  assign grid_item_width = 'small--one-half medium-up--one-fifth'
+  assign row_of = 5
+
+  case section.settings.recent_count
+    when 2
+      assign grid_item_width = 'medium-up--one-half'
+      assign row_of = 2
+    when 3
+      assign grid_item_width = 'small--one-half medium-up--one-third'
+      assign row_of = 3
+    when 4
+      assign grid_item_width = 'small--one-half medium-up--one-quarter'
+      assign row_of = 4
+    when 6
+      assign grid_item_width = 'small--one-half medium-up--one-sixth'
+      assign row_of = 6
+    when 8
+      assign grid_item_width = 'small--one-half medium-up--one-quarter'
+      assign row_of = 4
+  endcase
+-%}
+
+{%- style -%}
+
+#rvSection-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing }}px;
+}
+#rvSection-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing }}px;
+}
+  #rvSection-{{ section.id }} .grid-product__secondary-image, 
+  #rvSection-{{ section.id }} .grid__image-ratio {
+    background-color: {{ section.settings.bgColor }};
+  }
+
+  @media only screen and (max-width:768px){
+     
+#rvSection-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing | times:'0.5' }}px;
+}
+#rvSection-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing | times:'0.5' }}px;
+}
+
+}
+
+  {%- endstyle -%}
+
+<div
+  id="rvSection-{{ section.id }}"
+  data-subsection
+  data-section-id="{{ section.id }}"
+  data-section-type="recently-viewed"
+  data-product-handle="{{ product.handle }}"
+  data-recent-count="{{ section.settings.recent_count }}"
+  data-grid-item-class="{{ grid_item_width }}"
+  data-row-of="{{ row_of }}"
+    style="background-color: {{ section.settings.bgColor }}" 
+  class="{% if section.settings.space_above %} spaceAbove{% endif %}{% if section.settings.space_below %} spaceBelow{% endif %}">
+  <div class="index-section index-section--small">
+
+      {%- if section.settings.title != blank -%}
+    <div class="page-width">
+      <div class="section-header">
+        <div class="section-header__title subheading">
+          {{ section.settings.title }}
+        </div>
+        {% if section.settings.subtitle != blank %}<p>{{ section.settings.subtitle }}</p>{% endif %}
+      </div>
+    </div>
+  {%- endif -%}
+
+    <div class="page-width page-width--flush-small">
+      <div class="grid-overflow-wrapper">
+        <div id="RecentlyViewed-{{ section.id }}" class="grid grid--uniform" data-aos="overflow__animation"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.recently-viewed.name",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.recently-viewed.settings.content"
+    },
+    {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+    {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subtitle"
+        },
+    {
+      "type": "range",
+      "id": "recent_count",
+      "label": "t:sections.recently-viewed.settings.recent_count.label",
+      "default": 5,
+      "min": 2,
+      "max": 10,
+      "step": 1
+    },
+       {
+      "type": "color",
+      "id": "bgColor",
+      "label": "Background Color",
+      "default": "#EAE6DD"
+    },
+        {
+      "type": "range",
+      "id": "topSpacing",
+      "label": "Top Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_above",
+      "label": "Apply Top Spacing",
+      "default": true
+    },
+     {
+      "type": "range",
+      "id": "bottomSpacing",
+      "label": "Bottom Spacing",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_below",
+      "label": "Apply Bottom Spacing",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

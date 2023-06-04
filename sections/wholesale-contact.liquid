@@ -1,0 +1,139 @@
+<section class="section section--page page">
+  <div class="container container--tiny">
+    <center><div class="section__title section__title--center">
+      <h1 class="section__title-text h2">{{ section.settings.title }}</h1>
+    </div>
+      </br>
+    {% if page.content.size > 0 %}
+    <div class="page__content rte">
+      {{ page.content }}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="page__contact-form wsForm">
+    <div class="container container--tiny container--mob-0">
+      {% form 'contact' %}
+
+        {% if form.posted_successfully? %}
+        <p class="note note--success">
+            {{ 'contact.form.post_success' | t }}
+          </p>
+        {% endif %}
+
+      {{ form.errors | default_errors }}
+
+      <div class="o-layout">
+        
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+          <input required type="text" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+          </div>
+         
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormEmail" class="{% if form.errors contains 'email' %}label--error{% endif %}">{{ 'contact.form.email' | t }}</label>
+          <input required type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off"  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="{% if form.errors contains 'email' %}input--error{% endif %}">
+        </div>
+    
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+<label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+      <input required type="tel" id="ContactFormPhone" name="contact[phone]" pattern="[0-9\-]*"  value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormCompanyName">Company Name</label>
+      <input required type="text" id="ContactFormCompanyName" name="contact[CompanyName]">	 
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormAddress">Address</label>
+      <input required type="text" id="ContactFormAddress" name="contact[Address]">
+      </div>
+      
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+        <label for="ContactFormCity">City</label>
+      <input required type="text" id="ContactFormCity" name="contact[City]">      
+      </div>
+      
+    
+        <div class="o-layout__item u-1/1 u-1/2@tab">      
+      	  <label for="ContactFormState">State</label>
+	      <input required type="text" id="ContactFormState" name="contact[State]">
+        </div>
+       
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+          <label for="ContactFormPostalCode">Postal Code</label>
+          <input required type="text" id="ContactFormPostalCode" name="contact[PostalCode]">
+        </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormCountry">Country</label>
+      <input required type="text" id="ContactFormCountry" name="contact[Country]">            
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormEIN">Federal Tax EIN</label>
+      <input required type="text" id="ContactFormEIN" name="contact[EIN]">
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormWebsite">Website URL</label>
+      <input required type="text" id="ContactFormWebsite" name="contact[Website]">
+      </div>
+
+      <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label for="ContactFormInstagramHandle">Instagram Handle</label>
+      <input required type="text" id="ContactFormInstagramHandle" name="contact[InstagramHandle]">
+      </div>
+
+      <div class="o-layout__item fullWidth u-1/1 u-1/2@tab">
+      <label for="ContactFormAboutYourShop">About Your Shop</label>
+      <textarea rows="10" id="ContactFormMessage" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+      </div>
+      
+        <div class="o-layout__item u-1/1 u-1/2@tab">
+	  <label>What is your shop type?</label>
+      <input type="radio" id="ContactFormBrickAndMortar" name="contact[Brick and Mortar]" value="BrickAndMortar" /> Brick and Mortar<br>
+      <input type="radio" id="contactFormOnline" name="contact[Online]" value="Online" /> Online<br>
+      <input type="radio" id="contactFormBoth" name="contact[Both]" value="Both" /> Both<br>
+        </div>
+      
+     <div class="o-layout__item u-1/1 u-1/2@tab">
+      <label>What is your industry?</label>
+      <input type="radio" id="ContactFormBoutique" name="contact[Boutique]" value="Boutique" /> Boutique<br>
+      <input type="radio" id="ContactFormSpa/Salon" name="contact[Spa/Salon]" value="Spa/Salon" /> Spa/Salon<br>
+      <input type="radio" id="contactFormFlorist/Garden Center" name="contact[Florist/Garden Center]" value="Florist/Garden Center" /> Florist/Garden Center<br>
+      <input type="radio" id="contactFormCoffee Shop" name="contact[Coffee Shop]" value="Coffee Shop" /> Coffee Shop<br>
+      <input type="radio" id="contactFormSubscriptionBox" name="contact[Subscription Box]" value="SubscriptionBox" /> Subscription Box<br>
+      <input type="radio" id="contactFormRentalProperty" name="contact[Rental Property]" value="RentalProperty" /> Rental Property<br>
+     </div>
+
+          </div>
+
+      <input type="submit" class="btn btn--primary btn--center" value="Submit Application">
+      {% endform %}
+    </div>
+  </div>
+      </br>	
+</section>
+
+{% schema %}
+  {
+    "name": "Wholesale Contact Form",
+    "settings": [
+          {
+      "type": "textarea",
+      "id": "title",
+      "label": "Form Title",
+      "default": "Apply to Become a Wholesaler"
+    }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

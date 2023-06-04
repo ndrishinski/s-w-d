@@ -1,0 +1,260 @@
+ {%- style -%}
+
+#textCols-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing }}px;
+}
+#textCols-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing }}px;
+}
+
+@media only screen and (max-width:768px){
+     
+#textCols-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing | times:'0.5' }}px;
+}
+#textCols-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing | times:'0.5' }}px;
+}
+}
+
+ {%- endstyle -%}
+
+{%- if section.settings.divider -%}<div class="section--divider">{%- endif -%}
+
+  <div id="textCols-{{ section.id }}"
+     style="background-color: {{ section.settings.bgColor }}" 
+ class="textCols {% if section.settings.space_above %} spaceAbove{% endif %}{% if section.settings.space_below %} spaceBelow{% endif %} {% if section.settings.addOuterMargins %}addOuterMargins{% endif %}">
+
+<div class="page-width">
+  {%- if section.settings.title != blank -%}
+    <div class="section-header text-center">
+      <div class="subheading">{{ section.settings.title }}</div>
+    </div>
+  {%- endif -%}
+
+  <div class="grid{% unless section.blocks.size == 5 %} grid--uniform{% endunless %} grid--flush-bottom">
+    {%- liquid
+      assign grid_item_width = 'medium-up--one-third'
+      case section.blocks.size
+        when 1
+          assign grid_item_width = 'medium-up--one-half'
+        when 2
+          assign grid_item_width = 'medium-up--one-half'
+        when 4
+          assign grid_item_width = 'medium-up--one-quarter medium-down--one-half'
+      endcase
+    -%}
+    {%- for block in section.blocks -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop Start {%- endcomment -%}
+{%- capture hide_resource -%}{% render "wc_product_visibility", resource: block %}{%- endcapture -%}
+{%- if hide_resource == "true" -%}
+  {% continue %}
+{%- endif -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop End {%- endcomment -%}
+
+      {%- if section.blocks.size == 5 and forloop.index < 3 -%}
+        {%- assign column_width = 'medium-up--one-half' -%}
+      {%- else -%}
+        {%- assign column_width = grid_item_width -%}
+      {%- endif -%}
+      <div class="grid__item {{ column_width }} text-{{ section.settings.align_text }}" {{ block.shopify_attributes }} data-aos="row-of-3">
+        {%- if block.settings.enable_image -%}
+          <div style="{% if section.settings.align_text == 'center' %}margin: 0 auto;{% endif %} max-width: {{ block.settings.image_width }}px;">
+            {%- if block.settings.button_link != blank -%}
+              <a href="{{ block.settings.button_link }}">
+            {%- endif -%}
+            {%- if block.settings.image != blank -%}
+              <div class="image-wrap text-spacing" style="height: 0; padding-bottom: {{ 100 | divided_by: block.settings.image.aspect_ratio }}%;">
+                {%- assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                <img class="lazyload"
+                    data-src="{{ img_url }}"
+                    data-widths="[180, 360, 540, 720, 900, 1080]"
+                    data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+                    data-sizes="auto"
+                    alt="{{ block.settings.image.alt }}">
+              </div>
+            {%- else -%}
+              <div class="image-wrap text-spacing">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+            {%- endif -%}
+            {%- if block.settings.button_link != blank -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <div class="gridText">
+        {%- if block.settings.title != blank -%}
+          <h3>{{ block.settings.title }}</h3>
+        {%- endif -%}
+        {%- if block.settings.text != blank -%}
+          <div class="rte-setting text-spacing">{{ block.settings.text }}</div>
+        {%- endif -%}
+        {%- if block.settings.button_label != blank -%}
+          <a href="{{ block.settings.button_link }}" class="btn btn--small">
+            {{ block.settings.button_label }}
+          </a>
+        {%- endif -%}
+        </div>
+        
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+  </div>
+
+{%- if section.settings.divider -%}</div>{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.text-columns.name",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.text-columns.settings.title.label",
+      "default": "Discover More Sweet Water Decor"
+    },
+    {
+      "type": "select",
+      "id": "align_text",
+      "label": "t:sections.text-columns.settings.align_text.label",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.text-columns.settings.align_text.options.left.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.text-columns.settings.align_text.options.center.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.text-columns.settings.align_text.options.right.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "divider",
+      "label": "t:sections.text-columns.settings.divider.label",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bgColor",
+      "label": "Background Color"
+    },
+{
+      "type": "checkbox",
+      "id": "addOuterMargins",
+      "label": "Add Outer Margins"
+    },
+    {
+      "type": "range",
+      "id": "topSpacing",
+      "label": "Top Spacing",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_above",
+      "label": "Apply Top Spacing",
+      "default": true
+    },
+     {
+      "type": "range",
+      "id": "bottomSpacing",
+      "label": "Bottom Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_below",
+      "label": "Apply Bottom Spacing",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text_block",
+      "name": "t:sections.text-columns.blocks.column.name",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_image",
+          "label": "t:sections.text-columns.blocks.column.settings.enable_image.label",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.text-columns.blocks.column.settings.image.label"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "label": "t:sections.text-columns.blocks.column.settings.image_width.label",
+          "default": 800,
+          "min": 80,
+          "max": 800,
+          "step": 10,
+          "unit": "px"
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "t:sections.text-columns.blocks.column.settings.title.label",
+          "default": "Example title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:sections.text-columns.blocks.column.settings.text.label",
+          "default": "<p>Use this section to explain a set of product features, to link to a series of pages, or to answer common questions about your products. Add images for emphasis.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:sections.text-columns.blocks.column.settings.button_label.label",
+          "default": "Optional button"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "t:sections.text-columns.blocks.column.settings.button_link.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.text-columns.presets.text_columns_with_images.name",
+      "blocks": [
+        {
+          "type": "text_block"
+        },
+        {
+          "type": "text_block"
+        },
+        {
+          "type": "text_block"
+        },
+        {
+          "type": "text_block"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,202 @@
+ {%- style -%}
+
+#faqWrap-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing }}px;
+}
+#faqWrap-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing }}px;
+}
+
+@media only screen and (max-width:768px){
+     
+#faqWrap-{{ section.id }}.spaceAbove {
+padding-top: {{ section.settings.topSpacing | times:'0.5' }}px;
+}
+#faqWrap-{{ section.id }}.spaceBelow {
+padding-bottom: {{ section.settings.bottomSpacing | times:'0.5' }}px;
+}
+}
+
+ {%- endstyle -%}
+ 
+
+{%- if section.settings.page_title_enable or section.settings.page_content_enable -%}
+  <div id="faqWrap-{{ section.id }}" class="page-width page-width--narrow page-content{% if section.blocks.size > 0 %} page-content--with-blocks{% endif %} {% if section.settings.space_above %} spaceAbove{% endif %}{% if section.settings.space_below %} spaceBelow{% endif %} ">
+    {%- render 'breadcrumbs' -%}
+
+    {%- if section.settings.page_title_enable -%}
+      <header class="section-header">
+        <h1 class="section-header__title">{{ page.title }}</h1>
+      </header>
+    {%- endif -%}
+
+    {%- if section.settings.page_content_enable -%}
+      <div class="rte text-spacing">
+        {{ page.content }}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{%- if section.blocks.size > 0 -%}
+  <div class="page-width page-width--narrow page-content">
+    <div class="page-blocks page-blocks--flush" itemscope itemtype="https://schema.org/FAQPage">
+      {%- for block in section.blocks -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop Start {%- endcomment -%}
+{%- capture hide_resource -%}{% render "wc_product_visibility", resource: block %}{%- endcapture -%}
+{%- if hide_resource == "true" -%}
+  {% continue %}
+{%- endif -%}
+{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop End {%- endcomment -%}
+
+        <div {{ block.shopify_attributes }}>
+          {%- case block.type -%}
+            {%- when 'rich-text'-%}
+              {%- render 'page-block-rich-text', section_class: 'index-section--faq', block: block -%}
+
+            {%- when 'question'-%}
+              {%- render 'page-block-faq', block: block -%}
+
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Page.faq page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "page_title_enable",
+        "label": "Show page title"
+      },
+      {
+        "type": "checkbox",
+        "id": "page_content_enable",
+        "label": "Show page content"
+      },
+        {
+      "type": "range",
+      "id": "topSpacing",
+      "label": "Top Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_above",
+      "label": "Apply Top Spacing"
+    },
+     {
+      "type": "range",
+      "id": "bottomSpacing",
+      "label": "Bottom Spacing",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "space_below",
+      "label": "Apply Bottom Spacing"
+    }
+
+    ],
+    "default": {
+      "blocks": [
+        {
+          "type": "rich-text",
+          "settings": {
+            "title": "Shipping policy"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "Where do you ship to?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "How long will my order take?"
+          }
+        },
+        {
+          "type": "rich-text",
+          "settings": {
+            "title": "Returns and exchanges"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "title": "How do I ship my order back to you?"
+          }
+        }
+      ]
+    },
+    "blocks": [
+      {
+        "type": "rich-text",
+        "name": "Rich text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Rich text"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this section for any descriptive text you need to fill out your pages or to add introductory headings between other blocks.</p>"
+          },
+          {
+            "type": "select",
+            "id": "align_text",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Centered"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "question",
+        "name": "Question",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Question",
+            "default": "Frequently asked question"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to answer questions in as much detail as possible for your customers.</p>"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

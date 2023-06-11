@@ -7,9 +7,123 @@
     endif
   -%}
 
+  {% style %}
+    .dropdown {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .dropdown-toggle {
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      color: #333333;
+      padding: 15px 15px 13px 20px;
+      font-size: 16px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #e2e2e2;
+      cursor: pointer;
+      background: none;
+    }
+
+    /* Dropdown menu style */
+    .dropdown-menu {
+      width: 100%;
+      display: none;
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+    }
+    .dropdown-item {
+      display: block;
+      padding: 8px 16px;
+      color: #333333;
+      font-size: 16px;
+      text-decoration: none;
+      border-bottom: 1px solid #777;
+    }
+
+    .dropdown-item:hover {
+      background: var(--colorBtnPrimaryLight) !important;
+    }
+
+    .dropdown-button {
+      background: var(--colorBtnPrimaryLight) !important;
+    }
+
+    /* Show the dropdown menu when the button is clicked */
+    .show {
+      display: block;
+    }
+  {%- endstyle -%}
+
+  {% paginate collections.all.products by 1000 %}
+    {% assign all_products = collections.all.products %}
+    {% assign curProductTag = "" %}
+    {% for tag in product.tags %}
+      {% if tag contains "drop-down-list-" %}
+        {% assign curProductTag = tag | remove: 'drop-down-list-' %}
+      {% endif %}
+    {% endfor %}
+    {% if curProductTag != blank %}
+      <div data-prod="{{ curProductTag }}" class="dropdown">
+        <button
+          data-prod="{{ product.tags }}"
+          class="btn dropdown-toggle dropdown-button"
+          type="button"
+          id="collectionDropdown"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false">
+          {{ product.title }}
+          <span class="arrow-down">&#9660;</span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="collectionDropdown">
+          {% for prod in all_products %}
+            {% assign showProduct = 'false' %}
+            {% assign temp = "" %}
+            {% for tag in prod.tags %}
+              {% if tag contains "drop-down-list-" %}
+                {% assign showProduct = 'true' %}
+                {% assign temp = tag | remove: 'drop-down-list-' %}
+              {% endif %}
+            {% endfor %}
+            {% if showProduct == 'true' and curProductTag == temp and product.title != prod.title %}
+              <a
+                data-prod="{{ temp }}"
+                class="dropdown-item"
+                href="{{ prod.url }}">{{ prod.title }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endpaginate %}
+
+  <script defer>
+    // Get the dropdown button and menu elements
+    const dropdownButton = document.querySelector('.dropdown-toggle');
+          const dropdownMenu = document.querySelector('.dropdown-menu');
+          
+          // Close the dropdown menu if the user clicks outside of it
+          document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+              dropdownMenu.classList.remove('show');
+            }
+          });
+          
+          // Show the dropdown menu when the button is clicked
+          dropdownButton.addEventListener('click', function() {
+            dropdownMenu.classList.toggle('show');
+          });</script>
+
+
   {%- if enable_dynamic_buttons -%}
     <div class="payment-buttons">
-  {%- endif -%}
+    {%- endif -%}
 
     {%- liquid
       assign default_text = 'products.product.add_to_cart' | t
@@ -28,7 +142,9 @@
       name="add"
       data-add-to-cart
       class="btn btn--full add-to-cart btn--inverse{% if enable_dynamic_buttons and product.selling_plan_groups == empty %} btn--secondary{% endif %}"
-      {% unless current_variant.available %} disabled="disabled"{% endunless %}>
+      {% unless current_variant.available %}
+      disabled="disabled"
+      {% endunless %}>
       <span data-add-to-cart-text data-default-text="{{ default_text }}">
         {{ button_text }}
       </span>
@@ -37,45 +153,52 @@
     {%- if enable_dynamic_buttons -%}
       {{ form | payment_button }}
     {%- endif -%}
-  <br>
-<!-- Beginning of Buy With Prime Widget -->
-{% unless customer.tags contains 'wholesale' %}
-    <script async fetchpriority='high' src='https://code.buywithprime.amazon.com/bwp.v1.js'></script>
-  {% endunless %}
-{% if product.sku %}
-    <div
+    <br>
+    <!-- Beginning of Buy With Prime Widget -->
+    {% unless customer.tags contains 'wholesale' %}
+      <script
+        async
+        fetchpriority='high'
+        src='https://code.buywithprime.amazon.com/bwp.v1.js'></script>
+    {% endunless %}
+    {% if product.sku %}
+      <div
         id="amzn-buy-now"
         data-site-id="yqt1w1dqo1"
         data-widget-id="w-Lvzv1pG2vd6c7zQWa9J670"
-        data-sku="{{product.sku}}"
-    ></div>
-{% else %}
-    <div
+        data-sku="{{product.sku}}"></div>
+    {% else %}
+      <div
         id="amzn-buy-now"
         data-site-id="yqt1w1dqo1"
         data-widget-id="w-Lvzv1pG2vd6c7zQWa9J670"
-        data-sku="{{product.selected_or_first_available_variant.sku}}"
-    ></div>
-{% endif %}
-<!-- End of Buy With Prime Widget -->
-  {%- if enable_dynamic_buttons -%}
+        data-sku="{{product.selected_or_first_available_variant.sku}}"></div>
+    {% endif %}
+    <!-- End of Buy With Prime Widget -->
+    {%- if enable_dynamic_buttons -%}
     </div>
   {%- endif -%}
 
   <div class="shopify-payment-terms product__policies">{{ form | payment_terms }}</div>
 
-  <select name="id" data-product-select class="product-single__variants no-js">
+  <select
+    name="id"
+    data-product-select
+    class="product-single__variants no-js">
     {%- for variant in product.variants -%}
-{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop Start {%- endcomment -%}
-{%- capture hide_resource -%}{% render "wc_product_visibility", resource: variant %}{%- endcapture -%}
-{%- if hide_resource == "true" -%}
-  {% continue %}
-{%- endif -%}
-{%- comment -%} Wholesale_Club_Product_Visibility_For_Loop End {%- endcomment -%}
+      {%- comment -%} Wholesale_Club_Product_Visibility_For_Loop Start {%- endcomment -%}
+      {%- capture hide_resource -%}
+        {% render "wc_product_visibility", resource: variant %}{%- endcapture -%}
+      {%- if hide_resource == "true" -%}
+        {% continue %}
+      {%- endif -%}
+      {%- comment -%} Wholesale_Club_Product_Visibility_For_Loop End {%- endcomment -%}
 
       {%- if variant.available -%}
-        <option {% if variant == product.selected_or_first_available_variant %}
-          selected="selected"{% endif %}
+        <option
+          {% if variant == product.selected_or_first_available_variant %}
+          selected="selected"
+          {% endif %}
           value="{{ variant.id }}">
           {{ variant.title }} - {{ variant.price | money_with_currency }}
         </option>

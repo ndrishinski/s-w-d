@@ -139,8 +139,16 @@ Arguments
           {{ 'products.general.sale' | t }}
         </div>
       {%- endif -%}
-      {%- if product.available and product.selected_or_first_available_variant.inventory_quantity <= settings.inventory_threshold -%}
-        <div class="grid-product__tag grid-product__tag--sale">
+      {% if product.tags contains 'badge-pre-order' or product.tags contains 'preorder badge' %}
+        <div class="grid-product__tag grid-product__tag--sale" data-nick="{{ product.available }}- {{ product.selected_or_first_available_variant.inventory_quantity }}">
+          PRE-ORDER
+        </div>
+      {% elsif product.selected_or_first_available_variant.inventory_quantity <= 0 and product.available == false%}
+        <div class="grid-product__tag grid-product__tag--sale" data-nick="{{ product.available }}- {{ product.selected_or_first_available_variant.inventory_quantity }}">
+          {{ 'products.product.sold_out' | t }}
+        </div>        
+      {%- elsif product.available and product.selected_or_first_available_variant.inventory_quantity <= settings.inventory_threshold and product.title != 'Gift Card' -%}
+        <div class="grid-product__tag grid-product__tag--sale" data-nick="{{ product.available }}- {{ product.selected_or_first_available_variant.inventory_quantity }}">
           {{ product.selected_or_first_available_variant.inventory_quantity }} Left!
         </div>        
       {%- endif -%}      
@@ -280,6 +288,9 @@ Arguments
             {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
           {%- else -%}
             {{ WCItem_Price | money }}
+            {% if collection.metafields.custom.collection_discount_text %}
+              <div><span style="color: #843;">{{ collection.metafields.custom.collection_discount_text }}</span></div>
+            {% endif %}
           {%- endif -%}
           {%- if on_sale -%}
             {%- if settings.product_save_amount -%}
@@ -392,4 +403,4 @@ Arguments
   {%- if quick_shop_enable -%}
     {%- render 'quick-shop-modal', product: product -%}
   {%- endif -%}
-</div>
+{% render 'preorder-now-collection-item', product: product %}</div>

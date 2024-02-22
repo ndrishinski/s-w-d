@@ -283,15 +283,37 @@ Arguments
             <span class="grid-product__price--original">{{ WCItem_CompareAtPrice | money | replace:'$ ','$' }}</span>
             <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
           {%- endif -%}
+          {% assign example_array =  "(Dropship) Pillows, Wall Hangings, (Dropship) Found Decor, Furniture and Accents, Rugs, Exclude from Sale, LADY PENS, Wholesale Top Sellers" | split: ", " %}
+          {%- assign show_discount = true -%}
+          {%- assign collection_title = collection.title | size -%}
           {%- if product.price_varies -%}
             {%- assign price = WCItem_PriceMin | money -%}
-            {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
-          {%- else -%}
-            {{ WCItem_Price | money }}
-            {% if collection.metafields.custom.collection_discount_text %}
-              <div><span style="color: #843;">{{ collection.metafields.custom.collection_discount_text }}</span></div>
+            {% if example_array contains collection.title or show_discount == false or collection_title == 0 or collection.title == 'Products' or settings.company-wide-promo == false %}
+              {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
+
+            {% else %}
+              {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+              {% assign originalPrice = WCItem_PriceMin | money %}
+              {% assign discountedPrice = WCItem_PriceMin | times: 0.7 | money %}
+                <span style="text-decoration: line-through;">{{ originalPrice }}</span>
+                <p>
+                  <span style="color: #843">{{ discountedPrice }} with code SPRING30</span>
+                </p>
             {% endif %}
-          {%- endif -%}
+          {%- else -%}
+            {% assign new_price = WCItem_Price | minus: 1000 %}
+            {% assign originalPrice = WCItem_Price | money %}
+            {% assign discountedPrice = WCItem_Price | times: 0.7 | money %}
+            {% if example_array contains collection.title or show_discount == false or collection_title == 0 or collection.title == 'Products' or settings.company-wide-promo == false %}
+              {{ WCItem_Price | money }}
+
+            {% else %}
+              <span style="text-decoration: line-through;">{{ originalPrice }}</span>
+              <p>
+                <span style="color: #843">{{ discountedPrice }} with code SPRING30</span>
+              </p>
+            {%- endif -%}
+          {% endif %}
           {%- if on_sale -%}
             {%- if settings.product_save_amount -%}
               {%- if settings.product_save_type == 'dollar' -%}

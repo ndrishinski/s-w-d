@@ -283,7 +283,7 @@ Arguments
             <span class="grid-product__price--original">{{ WCItem_CompareAtPrice | money | replace:'$ ','$' }}</span>
             <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
           {%- endif -%}
-          {% assign example_array =  "(Dropship) Pillows, Wall Hangings, (Dropship) Found Decor, Furniture and Accents, Rugs, Exclude from Sale, LADY PENS, Wholesale Top Sellers" | split: ", " %}
+          {% assign example_array =  "(Dropship) Pillows & Blankets, (Dropship) Pillows, Wall Hangings, (Dropship) Found Decor, Furniture and Accents, Rugs, Exclude from Sale, LADY PENS, Wholesale Top Sellers" | split: ", " %}
           {%- assign show_discount = true -%}
           {%- assign collection_title = collection.title | size -%}
           {%- if product.price_varies -%}

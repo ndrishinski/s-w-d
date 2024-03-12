@@ -283,37 +283,140 @@ Arguments
             <span class="grid-product__price--original">{{ WCItem_CompareAtPrice | money | replace:'$ ','$' }}</span>
             <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
           {%- endif -%}
-          {% assign example_array =  "(Dropship) Pillows & Blankets, (Dropship) Pillows, Wall Hangings, (Dropship) Found Decor, Furniture and Accents, Rugs, Exclude from Sale, LADY PENS, Wholesale Top Sellers" | split: ", " %}
-          {%- assign show_discount = true -%}
-          {%- assign collection_title = collection.title | size -%}
-          {%- if product.price_varies -%}
-            {%- assign price = WCItem_PriceMin | money -%}
-            {% if example_array contains collection.title or show_discount == false or collection_title == 0 or collection.title == 'Products' or settings.company-wide-promo == false %}
-              {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
-
+          {% if settings.company-wide-promo == true %}
+            {% if settings.company-wide-promo-exclude-collections.size > 0 %}
+                {% assign beatles = settings.company-wide-promo-exclude-collections | split: ", " %}
+                {% for member in beatles %}
+                  {% if product.tags contains member %}
+                      {% assign showPromo = false %}
+                  {% else %}
+                      {% assign showPromo = true %}
+                  {% endif %}
+                {% endfor %}
+          
             {% else %}
-              {% assign new_price = WCItem_PriceMin | minus: 1000 %}
-              {% assign originalPrice = WCItem_PriceMin | money %}
-              {% assign discountedPrice = WCItem_PriceMin | times: 0.7 | money %}
-                <span style="text-decoration: line-through;">{{ originalPrice }}</span>
-                <p>
-                  <span style="color: #843">{{ discountedPrice }} with code SPRING30</span>
-                </p>
+              {% assign showPromo = true %}
             {% endif %}
-          {%- else -%}
-            {% assign new_price = WCItem_Price | minus: 1000 %}
-            {% assign originalPrice = WCItem_Price | money %}
-            {% assign discountedPrice = WCItem_Price | times: 0.7 | money %}
-            {% if example_array contains collection.title or show_discount == false or collection_title == 0 or collection.title == 'Products' or settings.company-wide-promo == false %}
-              {{ WCItem_Price | money }}
-
+          {% elsif settings.enable-select-product-promo == true %}
+            {% if settings.select-promo-include-collections %}
+                {% assign beatles = settings.select-promo-include-collections | split: ", " %}
+                {% for member in beatles %}
+                  {% if product.tags contains member %}
+                      {% assign showPromo = true %}
+                  {% else %}
+                      {% assign showPromo = false %}
+                  {% endif %}
+                {% endfor %}
+          
             {% else %}
-              <span style="text-decoration: line-through;">{{ originalPrice }}</span>
-              <p>
-                <span style="color: #843">{{ discountedPrice }} with code SPRING30</span>
-              </p>
-            {%- endif -%}
+              {% assign showPromo = false %}
+            {% endif %}
+          {% else %}
+            {% assign showPromo = false %}
           {% endif %}
+          {%- if product.price_varies -%}
+            {%- assign price = WCItem_PriceMin | money -%}            
+            {% if showPromo == true %}
+              {% if settings.company-wide-promo == false and settings.enable-select-product-promo == false %}
+                {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
+              {% elsif settings.company-wide-promo == true %}
+                {% if settings.company-wide-promo-slash-number != 0 %}
+                  {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+                  {% assign originalPrice = WCItem_PriceMin | money %}
+                  {% assign multiplier = 100 | minus: settings.company-wide-promo-slash-number %}
+                  {% assign fraction = multiplier | divided_by: 100.00 %}
+                  {% assign discountedPrice = WCItem_PriceMin | times: fraction | money %}
+                  <span style="text-decoration: line-through;">{{ originalPrice }}</span>
+                  <p>
+                    <span style="color: #843">{{ discountedPrice }} with code {{ settings.company-wide-promo-slash-promo }}</span>
+                  </p>
+                {% elsif settings.company-wide-promo-only-show-text %}
+                  {% assign originalPrice = WCItem_PriceMin | money %}
+                  <p>
+                    <span>{{ originalPrice }} {{ settings.company-wide-promo-only-show-text }}</span>
+                  </p>
+                {% else %}
+                  {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
+                {% endif %}
+              {% elsif settings.enable-select-product-promo == true %}
+                {% if settings.select-promo-slash-number != 0 %}
+                  {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+                  {% assign originalPrice = WCItem_PriceMin | money %}
+                  {% assign multiplier = 100 | minus: settings.select-promo-slash-number %}
+                  {% assign fraction = multiplier | divided_by: 100.00 %}
+                  {% assign discountedPrice = WCItem_PriceMin | times: fraction | money %}
+                  <span style="text-decoration: line-through;">{{ originalPrice }}</span>
+                  <p>
+                    <span style="color: #843">{{ discountedPrice }} with code {{ settings.select-promo-slash-promo }}</span>
+                  </p>
+                {% elsif settings.select-promo-only-show-text %}
+                  {% assign originalPrice = WCItem_PriceMin | money %}
+                  <p>
+                    <span>{{ originalPrice }} {{ settings.select-promo-only-show-text }}</span>
+                  </p>
+                {% else %}
+                  {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
+                {% endif %}
+              {% else %}
+                {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
+              {% endif %}
+            {% else %}
+                {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+                {% assign originalPrice = WCItem_PriceMin | money %}
+                {{ 'products.general.from_text_html' | t: price: price | replace:'$ ','$' }}
+            {% endif %}
+            {%- else -%}
+              {%- assign price = WCItem_PriceMin | money -%}
+              {% if showPromo == true %}
+                {% if settings.company-wide-promo == false and settings.enable-select-product-promo == false %}
+                  {{ WCItem_Price | money }}
+                {% elsif settings.company-wide-promo == true %}
+                  {% if settings.company-wide-promo-slash-number != 0 %}
+                    {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+                    {% assign originalPrice = WCItem_PriceMin | money %}
+                    {% assign multiplier = 100 | minus: settings.company-wide-promo-slash-number %}
+                    {% assign fraction = multiplier | divided_by: 100.00 %}
+                    {% assign discountedPrice = WCItem_PriceMin | times: fraction | money %}
+                    <span style="text-decoration: line-through;">{{ originalPrice }}</span>
+                    <p>
+                      <span style="color: #843">{{ discountedPrice }} with code {{ settings.company-wide-promo-slash-promo }}</span>
+                    </p>
+                  {% elsif settings.company-wide-promo-only-show-text %}
+                    {% assign originalPrice = WCItem_PriceMin | money %}
+                    <p>
+                      <span style="color: #843">{{ originalPrice }} {{ settings.company-wide-promo-only-show-text }}</span>
+                    </p>
+                  {% else %}
+                    {{ WCItem_Price | money }}
+                  {% endif %}
+                {% elsif settings.enable-select-product-promo == true %}
+                  {% if settings.select-promo-slash-number != 0 %}
+                    {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+                    {% assign originalPrice = WCItem_PriceMin | money %}
+                    {% assign multiplier = 100 | minus: settings.select-promo-slash-number %}
+                    {% assign fraction = multiplier | divided_by: 100.00 %}
+                    {% assign discountedPrice = WCItem_PriceMin | times: fraction | money %}
+                    <span style="text-decoration: line-through;">{{ originalPrice }}</span>
+                    <p>
+                      <span style="color: #843">{{ discountedPrice }} with code {{ settings.select-promo-slash-promo }}</span>
+                    </p>
+                  {% elsif settings.select-promo-only-show-text %}
+                    {% assign originalPrice = WCItem_PriceMin | money %}
+                    <p>
+                      <span style="color: #843">{{ originalPrice }} {{ settings.select-promo-only-show-text }}</span>
+                    </p>
+                  {% else %}
+                    {{ WCItem_Price | money }}
+                  {% endif %}
+                {% else %}
+                  {{ WCItem_Price | money }}
+                {% endif %}
+              {% else %}
+                {% assign new_price = WCItem_PriceMin | minus: 1000 %}
+                {% assign originalPrice = WCItem_PriceMin | money %}
+                {{ WCItem_Price | money }}
+              {% endif %}
+            {% endif %}
           {%- if on_sale -%}
             {%- if settings.product_save_amount -%}
               {%- if settings.product_save_type == 'dollar' -%}

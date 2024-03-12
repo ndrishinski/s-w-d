@@ -14,6 +14,66 @@
         "type": "checkbox",
         "label": "Enable company wide promo?",
         "id": "company-wide-promo"
+      },
+      {
+        "type": "range",
+        "id": "company-wide-promo-slash-number",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "A) Percent Off.",
+        "default": 0.0
+      },
+      {
+        "type": "text",
+        "label": "A) Promo Code.",
+        "id": "company-wide-promo-slash-promo"
+      },
+      {
+        "type": "text",
+        "label": "B) Custom Text",
+        "id": "company-wide-promo-only-show-text"
+      },
+      {
+        "type": "text",
+        "label": "Product tag to EXCLUDE",
+        "id": "company-wide-promo-exclude-collections"
+      }
+    ]
+  },
+  {
+    "name": "Promo Code on Select Product Types",
+    "settings": [
+      {
+        "type": "checkbox",
+        "label": "Enable promo on select product types?",
+        "id": "enable-select-product-promo"
+      },
+      {
+        "type": "range",
+        "id": "select-promo-slash-number",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "A) Percent Off.",
+        "default": 0.0
+      },
+      {
+        "type": "text",
+        "label": "A) Promo Code.",
+        "id": "select-promo-slash-promo"
+      },
+      {
+        "type": "text",
+        "label": "B) Custom Text",
+        "id": "select-promo-only-show-text"
+      },
+      {
+        "type": "text",
+        "label": "Product Tag to INCLUDE",
+        "id": "select-promo-include-collections"
       }
     ]
   },
